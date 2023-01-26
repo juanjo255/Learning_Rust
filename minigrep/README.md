@@ -1,1 +1,0 @@
-# Minigrep command line tool
