@@ -2,7 +2,39 @@
 use std::collections::HashMap;
 
 
-// Could you make a program that makes this string uppercase
+// Cut a string into chunks of size c (ignore the last chunk if its size is less than c).
+// If a chunk represents an integer such as the sum of the cubes of its digits is divisible by 2, 
+// reverse that chunk; otherwise rotate it to the left by one position.
+// Put together these modified chunks and return the result as a string.
+pub fn revrot(s: &str, c: usize) -> String {
+    if (s.is_empty()) | (c <= 0 )| (c > s.len()){
+        return String::from("")
+    }
+    
+    // String to return 
+    let mut result = String::new();
+    // First character
+    let mut first_char = 0;
+    // Last character
+    let mut last_char = c;
+    
+    for _chunk in 1..=(s.len()/c) {
+        let mut substring = (&s[first_char..last_char]).to_owned();
+        let substring_sum:u32 = substring.chars().map(|x| x.to_digit(10).unwrap()).collect::<Vec<u32>>().iter().sum();
+        if (substring_sum % 2) == 0{
+            substring = substring.chars().rev().collect::<String>();
+        }
+        else {
+            substring = substring[1..].to_owned() + &substring[0..1];
+        }
+        result += &substring;
+        first_char += c;
+        last_char += c;
+    }
+    return result
+}
+
+// Could you make a program that makes a string uppercase
 // gives it sorted in alphabetical order by last name.
 pub fn meeting(s: &str) -> String {
     let names = s.split(";");
