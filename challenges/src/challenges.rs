@@ -2,6 +2,20 @@
 use std::collections::HashMap;
 
 
+// From a range of number collect all the number that breaking them down into their digits 
+// and powering each digit to its correspond position in the integer give the same number.
+pub fn sum_dig_pow(a: u64, b: u64) -> Vec<u64>  {
+    let mut result:Vec<u64> = Vec::new();
+    for integer in a..=b{
+        let digits = integer.to_string();
+        let sum_digits:u64 = digits.chars().enumerate().map(|(k,v)| ((v.to_digit(10).unwrap() as u64).pow((k+1) as u32))).sum::<u64>() as u64;
+        if sum_digits == integer{
+            result.push(sum_digits);
+        }
+    };
+    return result
+} 
+
 // Cut a string into chunks of size c (ignore the last chunk if its size is less than c).
 // If a chunk represents an integer such as the sum of the cubes of its digits is divisible by 2, 
 // reverse that chunk; otherwise rotate it to the left by one position.
