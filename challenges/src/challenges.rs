@@ -1,6 +1,53 @@
 
 use std::collections::HashMap;
 
+//In number theory and combinatorics, a partition of a positive integer n, 
+//also called an integer partition, is a way of writing n as a sum of positive integers. 
+//Two sums that differ only in the order of their summands are considered the same partition.
+//For example, 4 can be partitioned in five distinct ways:
+// 4, 3 + 1, 2 + 2, 2 + 1 + 1, 1 + 1 + 1 + 1.
+pub fn part(n: i64) -> String {
+  todo!()
+}
+
+// From an n x n array, return the snail path in clockwise
+pub fn snail(matrix: &[Vec<i32>]) -> Vec<i32> {
+    let mut snail_path:Vec<i32> = Vec::new();
+    if (matrix.is_empty()) || (matrix[0].len() < 1) {
+        return snail_path
+    }
+    let mut start_row = 0;
+    let mut start_col = 0;
+    let mut end_row = matrix.len() - 1;
+    let mut end_col = matrix[0].len() - 1;
+    let mut laps = (matrix.len() as f32 / 2.0).ceil() as u8;
+    while laps > 0{
+        // top
+        let top = &matrix[start_row][start_col..=end_col];
+        snail_path.extend_from_slice(&top);
+        // if it's odd len let the top to take the last row
+        if matrix.len() % 2 != 0 && laps == 1{
+            break;
+        }
+        // right side
+        let right:Vec<i32> = (&matrix[start_row+1..=end_row-1]).to_owned().into_iter().map(|x| x[end_col]).collect();
+        snail_path.extend_from_slice(&right);
+        // bottom
+        let bottom:Vec<i32> = (&matrix[end_row][start_col..=end_col]).to_owned().into_iter().rev().collect();
+        snail_path.extend_from_slice(&bottom);
+        // left side
+        let left:Vec<i32> = (&matrix[start_row+1..=end_row-1]).to_owned().into_iter().map(|x| x[start_col]).rev().collect();
+        snail_path.extend_from_slice(&left);
+
+        // update vars
+        start_row += 1;
+        start_col += 1;
+        end_row = if end_row == 0 {0} else {end_row-1};
+        end_col = if end_col == 0 {0} else {end_col-1};
+        laps-=1
+    }
+    return snail_path
+} 
 
 // From a range of number collect all the number that breaking them down into their digits 
 // and powering each digit to its correspond position in the integer give the same number.
