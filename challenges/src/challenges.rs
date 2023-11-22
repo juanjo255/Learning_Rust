@@ -1,13 +1,49 @@
 
 use std::collections::HashMap;
 
-//In number theory and combinatorics, a partition of a positive integer n, 
-//also called an integer partition, is a way of writing n as a sum of positive integers. 
-//Two sums that differ only in the order of their summands are considered the same partition.
-//For example, 4 can be partitioned in five distinct ways:
-// 4, 3 + 1, 2 + 2, 2 + 1 + 1, 1 + 1 + 1 + 1.
-pub fn part(n: i64) -> String {
-  todo!()
+
+// given a duration in seconds return it in its biggest form
+// for example for 120 return 2 hours
+// the highest metric is year. year > day > hour > minute
+pub fn format_duration(seconds: u64) -> String {
+    // convert to float
+    let mut number = seconds as f64;
+    // convertion units
+    let units:Vec<f64>= vec![60.0, 60.0, 24.0, 365.0];
+    let unit_annots = vec!["year", "day", "hour", "minute", "second"];
+    // For final string
+    let mut residues:Vec<f64>=Vec::new();
+    let mut residue:f64;
+    for i in 0..units.len(){
+        residue = number % &units[i];
+        residues.insert(0, residue);
+        number = (number-residue) / &units[i];
+    }
+    residues.insert(0, number);
+    let words_to_concat:Vec<String> = residues.iter().enumerate().map(|(idx,n)|
+        if n > &1.0 {
+            return n.to_string() + " " + &unit_annots[idx] + "s";
+        }else{
+            return n.to_string() + " " + &unit_annots[idx];
+        }).filter(|x| !x.starts_with("0")).collect();
+    let mut sentence=String::new();
+    if words_to_concat.len() > 1{
+        for (idx, i) in words_to_concat.iter().enumerate(){
+            
+            if idx < (words_to_concat.len() - 2){
+                sentence =sentence + i + ", "; 
+            }else if idx == (words_to_concat.len() - 2) {
+                sentence = sentence + i + " and ";
+            }else{
+                sentence = sentence + i;
+                return sentence;
+            }
+        }
+    }else if words_to_concat.len() > 0{
+        sentence = sentence + &words_to_concat[0];
+        return sentence;
+    }
+    return  String::from("now");
 }
 
 // From an n x n array, return the snail path in clockwise
@@ -52,28 +88,28 @@ pub fn snail(matrix: &[Vec<i32>]) -> Vec<i32> {
 // From a range of number collect all the number that breaking them down into their digits 
 // and powering each digit to its correspond position in the integer give the same number.
 pub fn sum_dig_pow(a: u64, b: u64) -> Vec<u64>  {
-    let mut result:Vec<u64> = Vec::new();
+    let mut residues:Vec<u64> = Vec::new();
     for integer in a..=b{
         let digits = integer.to_string();
         let sum_digits:u64 = digits.chars().enumerate().map(|(k,v)| ((v.to_digit(10).unwrap() as u64).pow((k+1) as u32))).sum::<u64>() as u64;
         if sum_digits == integer{
-            result.push(sum_digits);
+            residues.push(sum_digits);
         }
     };
-    return result
+    return residues
 } 
 
 // Cut a string into chunks of size c (ignore the last chunk if its size is less than c).
 // If a chunk represents an integer such as the sum of the cubes of its digits is divisible by 2, 
 // reverse that chunk; otherwise rotate it to the left by one position.
-// Put together these modified chunks and return the result as a string.
+// Put together these modified chunks and return the residues as a string.
 pub fn revrot(s: &str, c: usize) -> String {
     if (s.is_empty()) | (c <= 0 )| (c > s.len()){
         return String::from("")
     }
     
     // String to return 
-    let mut result = String::new();
+    let mut residues = String::new();
     // First character
     let mut first_char = 0;
     // Last character
@@ -88,11 +124,11 @@ pub fn revrot(s: &str, c: usize) -> String {
         else {
             substring = substring[1..].to_owned() + &substring[0..1];
         }
-        result += &substring;
+        residues += &substring;
         first_char += c;
         last_char += c;
     }
-    return result
+    return residues
 }
 
 // Could you make a program that makes a string uppercase
@@ -111,7 +147,7 @@ pub fn meeting(s: &str) -> String {
 }
 
 // The main idea is to count all the occurring characters in a string. 
-// If you have a string like aba, then the result should be {'a': 2, 'b': 1}.
+// If you have a string like aba, then the residues should be {'a': 2, 'b': 1}.
 pub fn count(input: &str) -> HashMap<char, i32> {
     
     let mut dict:HashMap<char, i32> = HashMap::new();
