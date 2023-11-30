@@ -1,4 +1,5 @@
 use super::method::Method;
+use super::method::MethodError;
 use std::convert::TryFrom;
 use std::error::Error;
 use std::fmt::Debug;
@@ -23,8 +24,29 @@ impl TryFrom<&[u8]> for Request {
         // }
         // This is the same as above
         let request = str::from_utf8(buf).or(Err(ParseError::InvalidEnconding))?;
+        // match get_next_word(request) {
+        //     Some((method, request)) => {},
+        //     None => return Err(ParseError::InvalidRequest),
+        // }
+        // This is the same as  above
+        let (method, request) = get_next_word(request).ok_or(ParseError::InvalidRequest)?;
+        let (path, request) = get_next_word(request).ok_or(ParseError::InvalidRequest)?;
+        let (protocol, _) = get_next_word(request).ok_or(ParseError::InvalidRequest)?;
+        if protocol != "HTTP/1.1"{
+            return Err(ParseError::InvalidProtocol);
+        }
+        let method: Method = method.parse()?;
         todo!()
     }
+}
+
+fn get_next_word (request:&str) -> Option<(&str, &str)> {
+    for (i, c) in request.chars().enumerate() {
+        if c == ' ' || c == '\r' {
+            return  Some((&request[..i], &request[i+1..]));
+        }
+    }
+    todo!()
 }
 
 // ERROR HANDLING
@@ -34,6 +56,7 @@ pub enum ParseError {
     InvalidProtocol,
     InvalidMethod,
 }
+
 
 impl ParseError{
     fn message(&self) -> &str{
@@ -57,4 +80,12 @@ impl Debug for ParseError {
     }
 }
 
+impl From<MethodError> for ParseError{
+    fn from (_:MethodError) -> Self{
+        Self::InvalidMethod
+    }
+
+}
+
 impl Error for ParseError {}
+
