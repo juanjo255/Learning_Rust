@@ -14,11 +14,9 @@ impl FromStr for Method {
             "GET" => Ok(Self::GET),
             "POST" => Ok(Self::POST) ,
             "DELETE" => Ok(Self::DELETE),
-            _ => return Err(MethodError {  }), 
-        };
-        todo!()
+            _ => return Err(MethodError), 
+        }
     }
 }
 
-pub struct MethodError{
-}
+pub struct MethodError;
