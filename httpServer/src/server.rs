@@ -1,7 +1,7 @@
-use std::{net::TcpListener};
+use std::net::TcpListener;
 use std::convert::TryFrom;
 use crate::http::{Request, Response, StatusCode, ParseError};
-use std::io::{Read, Write};
+use std::io::Read;
 pub trait Handler {
     fn handle_request(&mut self, request: &Request) -> Response;
     fn handle_bad_request (&mut self, e: &ParseError) -> Response{
@@ -30,11 +30,11 @@ impl Server {
                             println!("Received a request: {}", String::from_utf8_lossy(&buffer));
                             let response = match Request::try_from(&buffer[..]){
                                 Ok(request) => {
-                                    handler.handle_request(&request);
+                                    handler.handle_request(&request)
                                 },
                                 Err(e) => {
                                     println!("Failed to parse a request: {}", e);
-                                    handler.handle_bad_request(&e);
+                                    handler.handle_bad_request(&e)
                                 }
                             };
                             if let Err(e) = response.send(&mut stream){
