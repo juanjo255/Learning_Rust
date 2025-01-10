@@ -1,6 +1,51 @@
 
 use std::collections::HashMap;
 
+// Write a function called sumIntervals/sum_intervals that accepts an array of 
+// intervals, and returns the sum of all the interval lengths.
+// Overlapping intervals should only be counted once.
+pub fn sum_intervals(intervals: &[(i32, i32)]) -> i32 {
+    let mut intervals_copy=intervals.to_owned();
+    intervals_copy.sort_by(|(k1,_),(k2,_)| k1.cmp(k2));
+
+    let mut count = 0;
+    let mut k1=intervals_copy[0].0;
+    let mut k2=intervals_copy[0].1;
+    for i in 1..intervals_copy.len() {
+        // if last num greater than the first num of next, substract
+        // Otherwise keep the count
+        if k2 > intervals_copy[i].0 {
+                k2 = k2.max(intervals_copy[i].1);
+        }
+        else {
+                count += (k2 - k1);
+                k1 = intervals_copy[i].0;
+                k2 = intervals_copy[i].1;
+            }
+
+        if i == intervals_copy.len() - 1 {
+                count += (k2 - k1);
+                return count;    
+        }
+    }
+    count += (k2 - k1);
+    println!("{}", count);
+    count
+}
+
+
+
+
+// You ask a small girl,"How old are you?" She always says, "x years old", 
+// where x is a random number between 0 and 9.
+//Write a program that returns the girl's age (0-9) as an integer.
+//Assume the test input string is always a valid string. For example, the test input may be "1 year old" or "5 years old". The first character in the string is always a number.
+
+pub fn get_age(age: &str) -> u32 {
+    // Your code here
+      (&age[0..1]).parse::<u32>().unwrap()
+  } 
+
 
 // given a duration in seconds return it in its biggest form
 // for example for 120 return 2 hours
